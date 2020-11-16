@@ -10,6 +10,13 @@ spec:
       value: https://github.com/Sogeti-Java-Community/tekton-meetup
     - name: gitRevision
       value: main
+    - name: pathToYamlFile
+      value: kubernetes/api.yaml
+    - name: imageUrl
+      value: markvdwalle/tekton-meetup
+    - name: imageTag
+      value: "1.0"
+  serviceAccountName: pipeline-account
   workspaces:
     - name: shared-workspace
       persistentVolumeClaim:

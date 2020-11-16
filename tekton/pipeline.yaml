@@ -14,6 +14,16 @@ spec:
     - name: gitRevision
       description: Git revision to check out
       default: main
+    - name: pathToContext
+      description: The path to the build context, used by Kaniko - within the workspace
+      default: .
+    - name: pathToYamlFile
+      description: The path to the yaml file to deploy within the git source
+    - name: imageUrl
+      description: Image name including repository
+    - name: imageTag
+      description: Image tag
+      default: "latest"
   tasks:
     - name: clone-repo
       taskRef:
@@ -46,3 +56,60 @@ spec:
           workspace: maven-settings
         - name: source
           workspace: shared-workspace
+    - name: test
+      taskref:
+        name: maven
+      runAfter:
+        - build
+      params:
+        - name: GOALS
+          value:
+            - test
+      workspaces:
+        - name: maven-settings
+          workspace: maven-settings
+        - name: source
+          workspace: shared-workspace
+    - name: package
+      taskref:
+        name: maven
+      runAfter:
+        - test
+      params:
+        - name: GOALS
+          value:
+            - -DskipTests
+            - package
+      workspaces:
+        - name: maven-settings
+          workspace: maven-settings
+        - name: source
+          workspace: shared-workspace
+    - name: docker-image
+      taskRef:
+        name: kaniko
+      runAfter:
+        - package
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      params:
+        - name: CONTEXT
+          value: $(params.pathToContext)
+        - name: IMAGE
+          value: $(params.imageUrl):$(params.imageTag)
+    - name: deploy-to-cluster
+      taskRef:
+        name: deploy-using-kubectl
+      workspaces:
+        - name: git-source
+          workspace: shared-workspace
+      params:
+        - name: pathToYamlFile
+          value: $(params.pathToYamlFile)
+        - name: imageUrl
+          value: $(params.imageUrl)
+        - name: imageTag
+          value: $(params.imageTag)
+        - name: imageDigest
+          value: $(tasks.docker-image.results.IMAGE-DIGEST)
