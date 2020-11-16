@@ -1,0 +1,18 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: tekton-meetup-pr-
+spec:
+  pipelineRef:
+    name: tektonmeetup-pipeline
+  params:
+    - name: gitUrl
+      value: https://github.com/Sogeti-Java-Community/tekton-meetup
+    - name: gitRevision
+      value: main
+  workspaces:
+    - name: shared-workspace
+      persistentVolumeClaim:
+        claimName: tekton-meetup-pvc
+    - name: maven-settings
+      emptyDir: {}

@@ -1,0 +1,48 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: tektonmeetup-pipeline
+spec:
+  workspaces:
+    - name: shared-workspace
+      description: The shared workspace
+    - name: maven-settings
+      description: Where the maven settings are
+  params:
+    - name: gitUrl
+      description: Git repository url
+    - name: gitRevision
+      description: Git revision to check out
+      default: main
+  tasks:
+    - name: clone-repo
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: url
+          value: "$(params.gitUrl)"
+        - name: revision
+          value: "$(params.gitRevision)"
+        - name: subdirectory
+          value: "."
+        - name: deleteExisting
+          value: "true"
+    - name: build
+      taskref:
+        name: maven
+      runAfter:
+        - clone-repo
+      params:
+        - name: GOALS
+          value:
+            - -DskipTests
+            - clean
+            - compile
+      workspaces:
+        - name: maven-settings
+          workspace: maven-settings
+        - name: source
+          workspace: shared-workspace
