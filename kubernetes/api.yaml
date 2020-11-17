@@ -16,7 +16,7 @@ spec:
       imagePullSecrets:
         - name: dockerhub-mark
       containers:
-        - name: tekton-restapi-image
+        - name: tekton-restapi
           image: __IMAGE__@__DIGEST__
           ports:
             - name: http-server
