@@ -13,11 +13,11 @@ spec:
       labels:
         app: tekton-restapi
     spec:
+      imagePullSecrets:
+        - name: dockerhub-mark
       containers:
         - name: tekton-restapi-image
           image: __IMAGE__@__DIGEST__
-          imagePullSecrets:
-            - name: dockerhub-mark
           ports:
             - name: http-server
               containerPort: 8080
