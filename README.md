@@ -17,3 +17,8 @@ For debugging:
 ```
 kubectl apply -f https://raw.githubusercontent.com/redhat-scholars/tekton-tutorial/master/workspaces/list-directory-task.yaml
 ```
+
+Port foreard
+```
+kubectl port-forward 
+```
