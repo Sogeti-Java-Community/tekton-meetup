@@ -21,7 +21,7 @@ It is easier to follow along in the pipelines if you install the dashboard
 ```
 kubectl apply --filename https://github.com/tektoncd/dashboard/releases/latest/download/tekton-dashboard-release.yaml
 ```
-No open your browser and connect to:
+Now open your browser and connect to:
 ```
 localhost:8080/api/v1/namespaces/tekton-pipelines/services/tekton-dashboard:http/proxy/
 ```
@@ -37,7 +37,7 @@ For executing maven tasks:
 ```
 kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/master/task/maven/0.2/maven.yaml
 ```
-For building and deploying docker images without docker engine:
+For building and publishing docker images without docker engine:
 ```
 kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/master/task/kaniko/0.1/kaniko.yaml
 ```
